@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="pelicula.shiri.twostrings.MovieDescriptionActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_movie_detail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout_movie_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:titleEnabled="false"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <ImageView
+                android:src="@drawable/grad_turquoise_flow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/imageMovieDetailBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:alpha="0.3"
+                app:layout_collapseMode="parallax" />
+
+            <ImageButton
+                android:id="@+id/imgButtonCloseDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                app:layout_collapseMode="parallax"
+                app:srcCompat="@drawable/ic_close_white"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabTrailer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:layout_collapseMode="parallax"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_play_arrow_white" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_movie_description" />
+
+</android.support.design.widget.CoordinatorLayout>
