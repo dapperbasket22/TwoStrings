@@ -3,6 +3,9 @@ package pelicula.shiri.twostrings.utilities;
 import pelicula.shiri.twostrings.BuildConfig;
 
 public class TMAUrl {
+    //OMDB
+    public static final String OMDB_URL = "http://www.omdbapi.com/?i=";
+
     //Movies
     public static final String UPCOMING_MOVIE_URL = "https://api.themoviedb.org/3/movie/upcoming?api_key="
             + BuildConfig.TMDB_API_KEY + "&region=in";

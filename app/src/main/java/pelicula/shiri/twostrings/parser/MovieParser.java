@@ -21,8 +21,9 @@ public class MovieParser {
                 int id = current.getInt("id");
                 String poster = current.getString("poster_path");
                 String title = current.getString("title");
-                float rating = current.getInt("vote_average")/2;
+                float rating = (float) (current.getDouble("vote_average")/2);
                 String userCount = current.getString("vote_count");
+                String overview = current.getString("overview");
 
                 JSONArray genArray = current.getJSONArray("genre_ids");
                 String genre = "";
@@ -31,7 +32,7 @@ public class MovieParser {
                     genre += CommonMethods.getGenreString(genArray.getInt(j)) + " ";
                 }
 
-                mData.add(new MovieObject(id, title, genre, rating, userCount, poster));
+                mData.add(new MovieObject(id, title, genre, rating, userCount, overview, poster));
             }
         } catch (JSONException e){
             e.printStackTrace();

@@ -4,27 +4,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
 import pelicula.shiri.twostrings.model.MovieDetailObject;
-import pelicula.shiri.twostrings.model.TdObject;
 import pelicula.shiri.twostrings.utilities.CommonMethods;
 
 public class MovieDetailParser {
     private MovieDetailObject mMovieData;
     private RecommendedParser mMovieRecommended;
-    private ArrayList<TdObject> mMovieKeyword;
 
     public MovieDetailParser(JSONObject response) {
-        mMovieKeyword = new ArrayList<>();
         try {
-            String backdrop = response.getString("backdrop_path");
-
             String genre = "";
             JSONArray genreArray = response.getJSONArray("genres");
             int genLength = genreArray.length()>=2?2:genreArray.length();
@@ -35,12 +23,13 @@ public class MovieDetailParser {
 
             int id = response.getInt("id");
             String overview = response.getString("overview");
-            String poster = response.getString("poster_path");
+            String poster = response.getString("backdrop_path");
             String release = CommonMethods.getDate(response.getString("release_date"));
             String runtime = response.getString("runtime") + " min";
             String title = response.getString("title");
-            float rating = response.getInt("vote_average")/2;
+            float rating = (float) response.getDouble("vote_average");
             String users = response.getString("vote_count");
+            String imdb_id = response.getString("imdb_id");
 
             String videoKey = "";
             JSONObject videoObject = response.getJSONObject("videos");
@@ -56,16 +45,8 @@ public class MovieDetailParser {
 
             mMovieRecommended = new RecommendedParser(response.getJSONObject("recommendations"));
 
-            JSONObject keywordObject = response.getJSONObject("keywords");
-            JSONArray keywordArray = keywordObject.getJSONArray("keywords");
-            int keywordLength = keywordArray.length()>=6?6:keywordArray.length();
-            for (int i=0; i<keywordLength; i++){
-                JSONObject current = keywordArray.getJSONObject(i);
-                mMovieKeyword.add(new TdObject(current.getInt("id"), current.getString("name")));
-            }
-
-            mMovieData = new MovieDetailObject(id, title, genre, rating, users, overview, release,
-                    runtime, poster, backdrop, videoKey);
+            mMovieData = new MovieDetailObject(id, imdb_id, title, genre, rating, users, overview, release,
+                    runtime, poster, videoKey);
         } catch (JSONException error){
             error.printStackTrace();
         }
@@ -77,9 +58,5 @@ public class MovieDetailParser {
 
     public RecommendedParser getmMovieRecommended() {
         return mMovieRecommended;
-    }
-
-    public ArrayList<TdObject> getmMovieKeyword() {
-        return mMovieKeyword;
     }
 }

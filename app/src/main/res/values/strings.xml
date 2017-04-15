@@ -15,4 +15,13 @@
     <string name="title_activity_movie_description">Description</string>
 
     <string name="title_activity_explore">Explore</string>
+    <string name="overlay">Overlay</string>
+    <string name="close_button">Close Button</string>
+    <string name="summary">Summary</string>
+    <string name="recommended">Recommended</string>
+    <string name="imdb_icon">Imdb Icon</string>
+    <string name="rotten_tomatoes">Rotten Tomatoes</string>
+    <string name="imdb">IMDb</string>
+    <string name="_10">/10</string>
+    <string name="percent_sign">%</string>
 </resources>

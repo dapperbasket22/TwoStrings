@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -35,8 +34,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import pelicula.shiri.twostrings.adapter.SearchMovieAdapter;
-import pelicula.shiri.twostrings.model.SearchMovieObject;
-import pelicula.shiri.twostrings.parser.SearchMovieParser;
+import pelicula.shiri.twostrings.model.MovieObject;
+import pelicula.shiri.twostrings.parser.MovieParser;
 import pelicula.shiri.twostrings.utilities.TMAUrl;
 
 public class SearchActivity extends AppCompatActivity {
@@ -47,7 +46,6 @@ public class SearchActivity extends AppCompatActivity {
     DiscreteScrollView mScrollSearch;
     TextView mTextTitle, mTextGenre, mTextUser, mTextOverview;
     RatingBar mRatingMovie;
-    Button mButtonView;
     ProgressBar mProgressSearch;
 
     @Override
@@ -81,7 +79,6 @@ public class SearchActivity extends AppCompatActivity {
         mRatingMovie = (RatingBar) findViewById(R.id.ratingSearchMovie);
         mTextUser = (TextView) findViewById(R.id.textSearchMovieUser);
         mTextOverview = (TextView) findViewById(R.id.textSearchMovieOverview);
-        mButtonView = (Button) findViewById(R.id.buttonMovieView);
         mProgressSearch = (ProgressBar) findViewById(R.id.pbSearch);
 
         mScrollSearch.setItemTransformer(new ScaleTransformer.Builder()
@@ -147,7 +144,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void resetFields() {
         try {
-            mScrollSearch.setAdapter(new SearchMovieAdapter(new ArrayList<SearchMovieObject>(), mImgSearch));
+            mScrollSearch.setAdapter(new SearchMovieAdapter(new ArrayList<MovieObject>(),
+                    mImgSearch, this));
             mTextTitle.setText("");
             mTextGenre.setText("");
             mRatingMovie.setRating(0);
@@ -155,7 +153,6 @@ public class SearchActivity extends AppCompatActivity {
             mTextOverview.setText("");
             mRatingMovie.setVisibility(View.INVISIBLE);
             mTextUser.setVisibility(View.INVISIBLE);
-            mButtonView.setVisibility(View.INVISIBLE);
             mProgressSearch.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Log.e(LOG_TAG_SEARCH, e.getMessage());
@@ -170,20 +167,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setupContent(JSONObject response){
-        SearchMovieParser parseResponse = new SearchMovieParser(response);
-        final ArrayList<SearchMovieObject> data = parseResponse.getmData();
+        MovieParser parseResponse = new MovieParser(response);
+        final ArrayList<MovieObject> data = parseResponse.getmData();
 
         mProgressSearch.setVisibility(View.INVISIBLE);
-        mScrollSearch.setAdapter(new SearchMovieAdapter(data, mImgSearch));
+        mScrollSearch.setAdapter(new SearchMovieAdapter(data, mImgSearch, this));
 
         try {
-            SearchMovieObject firstItem = data.get(0);
+            MovieObject firstItem = data.get(0);
             mTextTitle.setText(firstItem.getmTitle());
             mTextGenre.setText(firstItem.getmGenre());
             mRatingMovie.setRating(firstItem.getmRating());
             mTextUser.setText(firstItem.getmUserCount());
             mTextOverview.setText(firstItem.getmOverview());
-            mButtonView.setVisibility(View.VISIBLE);
             mRatingMovie.setVisibility(View.VISIBLE);
             mTextUser.setVisibility(View.VISIBLE);
         } catch (Exception e){
@@ -193,22 +189,12 @@ public class SearchActivity extends AppCompatActivity {
         mScrollSearch.setOnItemChangedListener(new DiscreteScrollView.OnItemChangedListener<RecyclerView.ViewHolder>() {
             @Override
             public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int adapterPosition) {
-                SearchMovieObject movieItem = data.get(adapterPosition);
+                MovieObject movieItem = data.get(adapterPosition);
                 mTextTitle.setText(movieItem.getmTitle());
                 mTextGenre.setText(movieItem.getmGenre());
                 mRatingMovie.setRating(movieItem.getmRating());
                 mTextUser.setText(movieItem.getmUserCount());
                 mTextOverview.setText(movieItem.getmOverview());
-            }
-        });
-
-        mButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                            Intent intent = new Intent(SearchActivity.this, MovieDescriptionActivity.class);
-                            SearchMovieObject currentItem = data.get(mScrollSearch.getCurrentItem());
-                            intent.putExtra("id", currentItem.getmId());
-                            startActivity(intent);
             }
         });
     }

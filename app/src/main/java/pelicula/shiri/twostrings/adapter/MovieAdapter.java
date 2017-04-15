@@ -34,20 +34,21 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.list_item_movie, parent, false);
-        return new ViewHolderGenMovie(v);
+        return new ViewHolderMovie(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolderGenMovie holderGenMovie = (ViewHolderGenMovie) holder;
+        ViewHolderMovie holderMovie = (ViewHolderMovie) holder;
         final MovieObject object = mDataSet.get(position);
 
         String imageUrl = TMAUrl.IMAGE_MED_URL + object.getmPoster();
-        holderGenMovie.imageMoviePoster.setImageUrl(imageUrl, mImgLoader);
-        holderGenMovie.textTitle.setText(object.getmTitle());
-        holderGenMovie.textGenre.setText(object.getmGenre());
-        holderGenMovie.ratingMovie.setRating(object.getmRating());
-        holderGenMovie.textUser.setText(object.getmUserCount());
+        holderMovie.imageMoviePoster.setImageUrl(imageUrl, mImgLoader);
+        holderMovie.textTitle.setText(object.getmTitle());
+        holderMovie.textGenre.setText(object.getmGenre());
+        holderMovie.ratingMovie.setRating(object.getmRating());
+        holderMovie.textUser.setText(object.getmUserCount());
+        holderMovie.textOverview.setText(object.getmOverview());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,17 +65,18 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return mDataSet.size();
     }
 
-    private class ViewHolderGenMovie extends RecyclerView.ViewHolder {
+    private class ViewHolderMovie extends RecyclerView.ViewHolder {
         NetworkImageView imageMoviePoster;
-        TextView textTitle, textGenre, textUser;
+        TextView textTitle, textGenre, textUser, textOverview;
         RatingBar ratingMovie;
 
-        ViewHolderGenMovie(View itemView) {
+        ViewHolderMovie(View itemView) {
             super(itemView);
             imageMoviePoster = (NetworkImageView) itemView.findViewById(R.id.imageMovieRecommendedPoster);
-            textTitle = (TextView) itemView.findViewById(R.id.textMovieRecommendedTitle);
+            textTitle = (TextView) itemView.findViewById(R.id.textMovieTitle);
             textGenre = (TextView) itemView.findViewById(R.id.textMovieGenre);
             textUser = (TextView) itemView.findViewById(R.id.textMovieUser);
+            textOverview = (TextView) itemView.findViewById(R.id.textMovieOverview);
             ratingMovie = (RatingBar) itemView.findViewById(R.id.ratingMovie);
         }
     }

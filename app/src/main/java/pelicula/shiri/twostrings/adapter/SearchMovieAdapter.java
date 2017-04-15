@@ -1,5 +1,7 @@
 package pelicula.shiri.twostrings.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +12,21 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 
+import pelicula.shiri.twostrings.MovieDescriptionActivity;
 import pelicula.shiri.twostrings.R;
-import pelicula.shiri.twostrings.model.SearchMovieObject;
+import pelicula.shiri.twostrings.model.MovieObject;
 import pelicula.shiri.twostrings.utilities.TMAUrl;
 
 public class SearchMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<SearchMovieObject> mDataSet;
+    private ArrayList<MovieObject> mDataSet;
     private ImageLoader mImgLoader;
+    private Context mContext;
 
-    public SearchMovieAdapter(ArrayList<SearchMovieObject> data, ImageLoader imageLoader) {
+    public SearchMovieAdapter(ArrayList<MovieObject> data, ImageLoader imageLoader,
+                              Context context) {
         mDataSet = data;
         mImgLoader = imageLoader;
+        mContext = context;
     }
 
     @Override
@@ -32,11 +38,19 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolderSearchMovie holderGenMovie = (ViewHolderSearchMovie) holder;
-        final SearchMovieObject object = mDataSet.get(position);
+        ViewHolderSearchMovie holderSearchMovie = (ViewHolderSearchMovie) holder;
+        final MovieObject object = mDataSet.get(position);
 
         String imageUrl = TMAUrl.IMAGE_MED_URL + object.getmPoster();
-        holderGenMovie.mMoviePoster.setImageUrl(imageUrl, mImgLoader);
+        holderSearchMovie.mMoviePoster.setImageUrl(imageUrl, mImgLoader);
+        holderSearchMovie.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MovieDescriptionActivity.class);
+                intent.putExtra("id", object.getmId());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

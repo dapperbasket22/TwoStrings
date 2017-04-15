@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="drawable_fill">#88ffffff</color>
+    <color name="drawable_fill_reverse">#88000000</color>
+    <color name="layout_ratings_background">#FFFFFFFF</color>
+</resources>
