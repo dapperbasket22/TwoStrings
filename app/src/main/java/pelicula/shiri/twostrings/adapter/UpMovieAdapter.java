@@ -41,7 +41,7 @@ public class UpMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ViewHolderUpMovie upHolder = (ViewHolderUpMovie) holder;
         final UpMovieObject object = mDataset.get(position);
 
-        String backdropUrl = TMAUrl.IMAGE_MED_URL + object.getmBackdrop();
+        String backdropUrl = TMAUrl.IMAGE_HIGH_URL + object.getmBackdrop();
         upHolder.movieBackdrop.setImageUrl(backdropUrl, mImgLoader);
 
         upHolder.movieTitle.setText(object.getmTitle());

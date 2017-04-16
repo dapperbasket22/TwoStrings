@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,14 +40,14 @@ public class PopularFragment extends Fragment {
     ProgressBar mProgressPop;
     RecyclerView.Adapter mPopAdapter;
 
-    EndlessRecyclerViewScrollListener mScrollListener;
-    ArrayList<MovieObject> mData;
-    RequestQueue mRequestPopular;
-    ImageLoader mImgPopular;
+    private ArrayList<MovieObject> mData;
+    private RequestQueue mRequestPopular;
+    private ImageLoader mImgPopular;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Popular movies");
         mRequestPopular = Volley.newRequestQueue(getActivity().getApplicationContext());
         mImgPopular = new ImageLoader(mRequestPopular, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap>
@@ -91,19 +93,23 @@ public class PopularFragment extends Fragment {
 
         mRequestPopular.add(upRequest);
 
-        mScrollListener = new EndlessRecyclerViewScrollListener(mRecyclerPopLayout) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextDataFromApi(page, view, TMAUrl.POPULAR_MOVIE_URL);
-            }
-        };
-
-        mRecyclerPopular.addOnScrollListener(mScrollListener);
+        mRecyclerPopular.addOnScrollListener(
+                new EndlessRecyclerViewScrollListener(mRecyclerPopLayout) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                        if (mData.get(mData.size() - 1) != null) {
+                            mData.add(null);
+                            mPopAdapter.notifyItemInserted(mData.size() - 1);
+                        }
+                        loadNextDataFromApi(page, TMAUrl.POPULAR_MOVIE_URL);
+                    }
+                }
+        );
 
         return viewPopular;
     }
 
-    void loadNextDataFromApi(int page, final RecyclerView view, String urlGen){
+    void loadNextDataFromApi(int page, String urlGen){
         Uri.Builder url = Uri.parse(urlGen).buildUpon();
         url.appendQueryParameter("page",String.valueOf(page));
 
@@ -111,28 +117,24 @@ public class PopularFragment extends Fragment {
                 url.toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                mProgressPop.setVisibility(View.INVISIBLE);
-                updateData(new MovieParser(response).getmData(), view);
+                updateData(new MovieParser(response).getmData());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mProgressPop.setVisibility(View.INVISIBLE);
             }
         });
 
         mRequestPopular.add(jsonObjectRequest);
     }
 
-    void updateData(ArrayList<MovieObject> data, RecyclerView view){
-        final int size = mPopAdapter.getItemCount();
+    void updateData(ArrayList<MovieObject> data){
+        mData.remove(mData.size()-1);
         mData.addAll(data);
-
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                mPopAdapter.notifyItemRangeInserted(size, mData.size() - 1);
-            }
-        });
+        try {
+            mPopAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

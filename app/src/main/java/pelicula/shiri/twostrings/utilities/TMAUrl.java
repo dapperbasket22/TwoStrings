@@ -18,6 +18,7 @@ public class TMAUrl {
 
     //Image
     public static final String IMAGE_MED_URL = "https://image.tmdb.org/t/p/w300/";
+    public static final String IMAGE_HIGH_URL = "https://image.tmdb.org/t/p/w500/";
 
     //Video
     public static final String YOU_TUBE_URL = "https://www.youtube.com/watch?v=";

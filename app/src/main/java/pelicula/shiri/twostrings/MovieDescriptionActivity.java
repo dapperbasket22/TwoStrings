@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -34,9 +33,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import pelicula.shiri.twostrings.adapter.GenreAdapter;
 import pelicula.shiri.twostrings.adapter.RecommendedAdapter;
 import pelicula.shiri.twostrings.model.MovieDetailObject;
 import pelicula.shiri.twostrings.model.RecommendedObject;
+import pelicula.shiri.twostrings.model.TdObject;
 import pelicula.shiri.twostrings.parser.MovieDetailParser;
 import pelicula.shiri.twostrings.utilities.StartOffsetDecoration;
 import pelicula.shiri.twostrings.utilities.TMAUrl;
@@ -47,22 +48,23 @@ public class MovieDescriptionActivity extends AppCompatActivity {
     ImageLoader mImgLoaderDetail;
     String mTrailerKey;
 
+    Toolbar mToolbar;
     RatingBar mRating;
     FloatingActionButton mFabTrailer;
     NetworkImageView mBackdrop;
-    LinearLayout mLayoutRating, mLayoutRecommended;
-    RecyclerView mRecyclerRecommended;
-    TextView mTitle, mGenre, mTextRating, mTextImdbRating, mTextTomatoRating, mUserCount, mRelease,
+    RecyclerView mRecyclerGenre, mRecyclerRecommended;
+    TextView mTextRating, mTextImdbRating, mTextTomatoRating, mUserCount, mRelease,
             mRuntime, mOverview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_description);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMovieDetail);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbarMovieDetail);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mRequestDetail = Volley.newRequestQueue(getApplicationContext());
         mImgLoaderDetail = new ImageLoader(mRequestDetail, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap>
@@ -87,7 +89,8 @@ public class MovieDescriptionActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 MovieDetailParser parser = new MovieDetailParser(response);
-                setViewData(parser.getmMovieData(), parser.getmMovieRecommended().getmData());
+                setViewData(parser.getmMovieData(), parser.getmGenreArray(),
+                        parser.getmMovieRecommended().getmData());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -134,8 +137,6 @@ public class MovieDescriptionActivity extends AppCompatActivity {
     private void initViews() {
         mBackdrop = (NetworkImageView) findViewById(R.id.imageMovieDetailBackdrop);
         mFabTrailer = (FloatingActionButton) findViewById(R.id.fabTrailer);
-        mTitle = (TextView) findViewById(R.id.textMovieDetailTitle);
-        mGenre = (TextView) findViewById(R.id.textMovieDetailGenre);
         mTextRating = (TextView) findViewById(R.id.textMovieDetailRating);
         mRating = (RatingBar) findViewById(R.id.ratingMovieDetail);
         mTextImdbRating = (TextView) findViewById(R.id.textImdbRating);
@@ -144,25 +145,29 @@ public class MovieDescriptionActivity extends AppCompatActivity {
         mRelease = (TextView) findViewById(R.id.textMovieDetailRelease);
         mRuntime = (TextView) findViewById(R.id.textMovieDetailRuntime);
         mOverview = (TextView) findViewById(R.id.textMovieDetailOverview);
-        mLayoutRating = (LinearLayout) findViewById(R.id.layoutMovieDetailRating);
-        mLayoutRecommended = (LinearLayout) findViewById(R.id.layoutMovieDetailRecommended);
+        mRecyclerGenre = (RecyclerView) findViewById(R.id.recyclerMovieGenre);
         mRecyclerRecommended = (RecyclerView) findViewById(R.id.recyclerMovieDetailRecommended);
     }
 
-    private void setViewData(MovieDetailObject movieDetailObject,
+    private void setViewData(final MovieDetailObject movieDetailObject,
+                             ArrayList<TdObject> genreObject,
                              ArrayList<RecommendedObject> dataRecommended) {
-        String posterUrl = TMAUrl.IMAGE_MED_URL + movieDetailObject.getmPoster();
+        String posterUrl = TMAUrl.IMAGE_HIGH_URL + movieDetailObject.getmPoster();
+        getSupportActionBar().setTitle(movieDetailObject.getmTitle());
         mTrailerKey = movieDetailObject.getmTrailer();
 
         mBackdrop.setImageUrl(posterUrl, mImgLoaderDetail);
         mRating.setRating(movieDetailObject.getmRating()/2);
         mTextRating.setText((Float.toString(movieDetailObject.getmRating())));
-        mTitle.setText(movieDetailObject.getmTitle());
-        mGenre.setText(movieDetailObject.getmGenre());
-        mUserCount.setText(movieDetailObject.getmUserCount());
+        String users = movieDetailObject.getmUserCount() + " Voters";
+        mUserCount.setText(users);
         mRelease.setText(movieDetailObject.getmRelease());
         mRuntime.setText(movieDetailObject.getmRuntime());
         mOverview.setText(movieDetailObject.getmOverview());
+
+        mRecyclerGenre.setLayoutManager(new
+                LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerGenre.setAdapter(new GenreAdapter(genreObject, this, 1));
 
         String omdbUrl = TMAUrl.OMDB_URL + movieDetailObject.getmImdbId();
         JsonObjectRequest omdbRequest = new JsonObjectRequest(Request.Method.GET, omdbUrl,
@@ -193,7 +198,6 @@ public class MovieDescriptionActivity extends AppCompatActivity {
                     mTextTomatoRating.setText("-");
                     Log.e(TAG, e.getMessage());
                 }
-                mLayoutRating.setVisibility(View.VISIBLE);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -209,7 +213,6 @@ public class MovieDescriptionActivity extends AppCompatActivity {
         mRecyclerRecommended.setLayoutManager(new
                 LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mRecyclerRecommended.setNestedScrollingEnabled(false);
-        if (dataRecommended.size() > 0) mLayoutRecommended.setVisibility(View.VISIBLE);
         mRecyclerRecommended.setAdapter(new RecommendedAdapter(dataRecommended, mImgLoaderDetail,
                 this));
         mRecyclerRecommended.addItemDecoration(new StartOffsetDecoration(32));

@@ -4,21 +4,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import pelicula.shiri.twostrings.model.MovieDetailObject;
+import pelicula.shiri.twostrings.model.TdObject;
 import pelicula.shiri.twostrings.utilities.CommonMethods;
 
 public class MovieDetailParser {
     private MovieDetailObject mMovieData;
+    private ArrayList<TdObject> mGenreArray;
     private RecommendedParser mMovieRecommended;
 
     public MovieDetailParser(JSONObject response) {
+        mGenreArray = new ArrayList<>();
         try {
             String genre = "";
             JSONArray genreArray = response.getJSONArray("genres");
-            int genLength = genreArray.length()>=2?2:genreArray.length();
+            int genLength = genreArray.length()>=3?3:genreArray.length();
             for (int i=0; i<genLength; i++) {
                 JSONObject currentGenre = genreArray.getJSONObject(i);
-                genre += currentGenre.getString("name") + " ";
+                int genreId = currentGenre.getInt("id");
+                String genreName = currentGenre.getString("name");
+                genre += genreName + " ";
+                mGenreArray.add(new TdObject(genreId, genreName));
             }
 
             int id = response.getInt("id");
@@ -54,6 +62,10 @@ public class MovieDetailParser {
 
     public MovieDetailObject getmMovieData() {
         return mMovieData;
+    }
+
+    public ArrayList<TdObject> getmGenreArray() {
+        return mGenreArray;
     }
 
     public RecommendedParser getmMovieRecommended() {

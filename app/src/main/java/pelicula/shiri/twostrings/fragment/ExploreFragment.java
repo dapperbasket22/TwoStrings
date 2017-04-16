@@ -1,7 +1,9 @@
 package pelicula.shiri.twostrings.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +22,12 @@ public class ExploreFragment extends Fragment {
     RecyclerView mRecyclerGenre;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Explore movies by genre");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View viewExplore = inflater.inflate(R.layout.fragment_recycler, container, false);
 
@@ -28,7 +36,7 @@ public class ExploreFragment extends Fragment {
 
         mRecyclerGenre = (RecyclerView) viewExplore.findViewById(R.id.recyclerCommon);
         mRecyclerGenre.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerGenre.setAdapter(new GenreAdapter(getGenreData(), getContext()));
+        mRecyclerGenre.setAdapter(new GenreAdapter(getGenreData(), getContext(), 0));
 
         return viewExplore;
     }

@@ -10,17 +10,18 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_movie_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_height"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:titleEnabled="false"
+            app:expandedTitleTextAppearance="?android:textAppearanceLarge"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|snap">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/imageMovieDetailBackdrop"
@@ -34,142 +35,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabTrailer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:fabSize="mini"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_play_arrow" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerMovieGenre"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbarMovieDetail"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="parallax"
+                app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
-
-                <TextView
-                    android:id="@+id/textMovieDetailRelease"
-                    android:gravity="center"
-                    android:textColor="#fff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_event"
-                    android:drawableStart="@drawable/ic_event"
-                    android:drawablePadding="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp" />
-
-                <TextView
-                    android:id="@+id/textMovieDetailRating"
-                    style="?android:textAppearanceLarge"
-                    android:background="@drawable/text_view_circle"
-                    android:gravity="center"
-                    android:textColor="#fff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@+id/textMovieDetailRating"
-                    app:layout_constraintRight_toLeftOf="@+id/textMovieDetailRating"
-                    app:layout_constraintTop_toTopOf="@+id/textMovieDetailRating">
-
-                    <RatingBar
-                        android:id="@+id/ratingMovieDetail"
-                        style="@style/Widget.AppCompat.RatingBar.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:numStars="5"
-                        android:stepSize="0.5"
-                        tools:layout_editor_absoluteX="0dp"
-                        tools:layout_editor_absoluteY="106dp" />
-
-                    <TextView
-                        android:layout_gravity="center"
-                        android:drawableLeft="@drawable/ic_person_white"
-                        android:drawableStart="@drawable/ic_person_white"
-                        android:drawablePadding="4dp"
-                        android:gravity="center"
-                        android:id="@+id/textMovieDetailUsers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </android.support.constraint.ConstraintLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/constraintLayout">
-
-            <TextView
-                android:id="@+id/textMovieDetailRuntime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_access_time"
-                android:drawableStart="@drawable/ic_access_time"
-                android:drawablePadding="4dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textMovieDetailTitle"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:id="@+id/textMovieDetailGenre"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/textMovieDetailRuntime"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textMovieDetailRuntime"
-                app:layout_constraintTop_toTopOf="@+id/textMovieDetailRuntime" />
-
-            <TextView
-                android:id="@+id/textMovieDetailTitle"
-                style="?android:textAppearanceLarge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="8dp" />
-        </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.AppBarLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabTrailer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="mini"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_anchor="@id/app_bar_movie_detail"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_play_arrow" />
 
     <include layout="@layout/content_movie_description" />
 

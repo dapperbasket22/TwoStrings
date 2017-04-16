@@ -1,5 +1,8 @@
 package pelicula.shiri.twostrings.utilities;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,14 +12,29 @@ import java.util.Locale;
 public class CommonMethods {
 
     public static String getDate(String date){
-        if (date.equals("") || date.equals("null") || date.isEmpty()) return "";
+        if (TextUtils.isEmpty(date)) return "";
         DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH);
         Date dateString = null;
         try {
             dateString = originalFormat.parse(date);
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("DateError", e.getMessage());
+            return "";
+        }
+        return targetFormat.format(dateString);
+    }
+
+    public static String getYear(String date){
+        if (TextUtils.isEmpty(date)) return "";
+        DateFormat originalFormat = new SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH);
+        DateFormat targetFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+        Date dateString = null;
+        try {
+            dateString = originalFormat.parse(date);
+        } catch (ParseException e) {
+            Log.e("DateError", e.getMessage());
+            return "";
         }
         return targetFormat.format(dateString);
     }

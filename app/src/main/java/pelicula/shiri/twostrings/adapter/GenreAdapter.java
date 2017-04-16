@@ -17,16 +17,24 @@ import pelicula.shiri.twostrings.model.TdObject;
 public class GenreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private ArrayList<TdObject> mDataSet;
     private Context mContext;
+    private int mLayoutType;
 
-    public GenreAdapter(ArrayList<TdObject> data, Context context) {
+    public GenreAdapter(ArrayList<TdObject> data, Context context, int layoutType) {
         mDataSet = data;
         mContext = context;
+        mLayoutType = layoutType;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View genre = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.list_item_genre, parent, false);
+        View genre;
+        if (mLayoutType == 0) {
+            genre = LayoutInflater.from(parent.getContext()).
+                    inflate(R.layout.list_item_genre, parent, false);
+        } else {
+            genre = LayoutInflater.from(parent.getContext()).
+                    inflate(R.layout.list_item_movie_genre, parent, false);
+        }
         return new ViewHolderGenre(genre);
     }
 

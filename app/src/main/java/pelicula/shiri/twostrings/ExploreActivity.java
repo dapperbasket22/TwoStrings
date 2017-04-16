@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,10 +37,9 @@ public class ExploreActivity extends AppCompatActivity {
     ProgressBar mProgressExplore;
     RecyclerView.Adapter mExploreAdapter;
 
-    EndlessRecyclerViewScrollListener mScrollListener;
-    ArrayList<MovieObject> mData;
-    RequestQueue mRequestExplore;
-    ImageLoader mImgExplore;
+    private ArrayList<MovieObject> mData;
+    private RequestQueue mRequestExplore;
+    private ImageLoader mImgExplore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,18 +91,21 @@ public class ExploreActivity extends AppCompatActivity {
 
         mRequestExplore.add(upRequest);
 
-        mScrollListener = new EndlessRecyclerViewScrollListener(mRecyclerExploreLayout) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextDataFromApi(page, view, genMovieUrl);
-            }
-        };
-
-        mRecyclerExplore.addOnScrollListener(mScrollListener);
-
+        mRecyclerExplore.addOnScrollListener(
+                new EndlessRecyclerViewScrollListener(mRecyclerExploreLayout) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                        if (mData.get(mData.size() - 1) != null) {
+                            mData.add(null);
+                            mExploreAdapter.notifyItemInserted(mData.size() - 1);
+                        }
+                        loadNextDataFromApi(page, genMovieUrl);
+                    }
+                }
+        );
     }
 
-    void loadNextDataFromApi(int page, final RecyclerView view, String urlGen){
+    void loadNextDataFromApi(int page, String urlGen){
         Uri.Builder url = Uri.parse(urlGen).buildUpon();
         url.appendQueryParameter("page",String.valueOf(page));
 
@@ -110,28 +113,24 @@ public class ExploreActivity extends AppCompatActivity {
                 url.toString(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                mProgressExplore.setVisibility(View.INVISIBLE);
-                updateData(new MovieParser(response).getmData(), view);
+                updateData(new MovieParser(response).getmData());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mProgressExplore.setVisibility(View.INVISIBLE);
             }
         });
 
         mRequestExplore.add(jsonObjectRequest);
     }
 
-    void updateData(ArrayList<MovieObject> data, RecyclerView view){
-        final int size = mExploreAdapter.getItemCount();
+    void updateData(ArrayList<MovieObject> data){
+        mData.remove(mData.size()-1);
         mData.addAll(data);
-
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                mExploreAdapter.notifyItemRangeInserted(size, mData.size() - 1);
-            }
-        });
+        try {
+            mExploreAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            Toast.makeText(ExploreActivity.this, "Something Went Wrong!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
