@@ -64,7 +64,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holderMovie.textTitle.setText(object.getmTitle());
             holderMovie.textGenre.setText(object.getmGenre());
             holderMovie.ratingMovie.setRating(object.getmRating());
-            holderMovie.textUser.setText(object.getmUserCount());
+            String userCount = "(" + object.getmUserCount() + ")";
+            holderMovie.textUser.setText(userCount);
             holderMovie.textOverview.setText(object.getmOverview());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

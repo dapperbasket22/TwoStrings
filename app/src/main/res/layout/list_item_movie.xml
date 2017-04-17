@@ -26,10 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:drawableLeft="@drawable/ic_person"
-                android:drawableStart="@drawable/ic_person"
-                android:drawablePadding="4dp"
-                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="@+id/ratingMovie"
                 app:layout_constraintLeft_toRightOf="@+id/ratingMovie"
                 app:layout_constraintTop_toTopOf="@+id/ratingMovie" />

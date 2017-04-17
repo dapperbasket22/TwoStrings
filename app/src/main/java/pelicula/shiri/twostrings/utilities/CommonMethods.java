@@ -15,7 +15,7 @@ public class CommonMethods {
         if (TextUtils.isEmpty(date)) return "";
         DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH);
-        Date dateString = null;
+        Date dateString;
         try {
             dateString = originalFormat.parse(date);
         } catch (ParseException e) {
@@ -29,7 +29,7 @@ public class CommonMethods {
         if (TextUtils.isEmpty(date)) return "";
         DateFormat originalFormat = new SimpleDateFormat("dd MMM, yyyy", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
-        Date dateString = null;
+        Date dateString;
         try {
             dateString = originalFormat.parse(date);
         } catch (ParseException e) {

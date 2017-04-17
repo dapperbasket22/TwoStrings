@@ -11,6 +11,7 @@ import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -152,7 +153,6 @@ public class SearchActivity extends AppCompatActivity {
             mTextUser.setText("");
             mTextOverview.setText("");
             mRatingMovie.setVisibility(View.INVISIBLE);
-            mTextUser.setVisibility(View.INVISIBLE);
             mProgressSearch.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Log.e(LOG_TAG_SEARCH, e.getMessage());
@@ -176,12 +176,16 @@ public class SearchActivity extends AppCompatActivity {
         try {
             MovieObject firstItem = data.get(0);
             mTextTitle.setText(firstItem.getmTitle());
-            mTextGenre.setText(firstItem.getmGenre());
+            String genre = firstItem.getmGenre();
+            if (TextUtils.isEmpty(genre)) genre = "\n";
+            mTextGenre.setText(genre);
             mRatingMovie.setRating(firstItem.getmRating());
-            mTextUser.setText(firstItem.getmUserCount());
-            mTextOverview.setText(firstItem.getmOverview());
+            String userCount = "(" + firstItem.getmUserCount() + ")";
+            mTextUser.setText(userCount);
+            String overview = firstItem.getmOverview();
+            if (TextUtils.isEmpty(overview)) overview = "\n\n";
+            mTextOverview.setText(overview);
             mRatingMovie.setVisibility(View.VISIBLE);
-            mTextUser.setVisibility(View.VISIBLE);
         } catch (Exception e){
             Log.e(LOG_TAG_SEARCH, e.getMessage());
         }
@@ -191,10 +195,15 @@ public class SearchActivity extends AppCompatActivity {
             public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int adapterPosition) {
                 MovieObject movieItem = data.get(adapterPosition);
                 mTextTitle.setText(movieItem.getmTitle());
-                mTextGenre.setText(movieItem.getmGenre());
+                String genre = movieItem.getmGenre();
+                if (TextUtils.isEmpty(genre)) genre = "\n";
+                mTextGenre.setText(genre);
                 mRatingMovie.setRating(movieItem.getmRating());
-                mTextUser.setText(movieItem.getmUserCount());
-                mTextOverview.setText(movieItem.getmOverview());
+                String userCount = "(" + movieItem.getmUserCount() + ")";
+                mTextUser.setText(userCount);
+                String overview = movieItem.getmOverview();
+                if (TextUtils.isEmpty(overview)) overview = "\n\n";
+                mTextOverview.setText(overview);
             }
         });
     }
