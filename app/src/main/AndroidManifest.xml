@@ -36,6 +36,7 @@
         <activity
             android:name=".MovieDescriptionActivity"
             android:screenOrientation="portrait"
+            android:label="@string/title_activity_movie_description"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExploreActivity"

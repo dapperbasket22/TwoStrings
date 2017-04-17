@@ -17,6 +17,7 @@ public class TMAUrl {
     public static final String MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie";
 
     //Image
+    public static final String IMAGE_LOW_URL = "https://image.tmdb.org/t/p/w150/";
     public static final String IMAGE_MED_URL = "https://image.tmdb.org/t/p/w300/";
     public static final String IMAGE_HIGH_URL = "https://image.tmdb.org/t/p/w500/";
 
@@ -26,4 +27,7 @@ public class TMAUrl {
     //Search
     public static final String SEARCH_URL = "https://api.themoviedb.org/3/search/movie?api_key="
             + BuildConfig.TMDB_API_KEY;
+
+    //Base Url
+    public static final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie";
 }

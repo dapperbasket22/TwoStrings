@@ -9,6 +9,7 @@ import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,11 @@ public class PopularFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Popular movies");
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Popular movies");
+        } catch(NullPointerException e) {
+            Log.e("PopularFragment", e.getMessage());
+        }
         mRequestPopular = Volley.newRequestQueue(getActivity().getApplicationContext());
         mImgPopular = new ImageLoader(mRequestPopular, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap>

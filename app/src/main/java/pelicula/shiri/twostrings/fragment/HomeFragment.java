@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,11 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        } catch(NullPointerException e) {
+            Log.e("HomeFragment", e.getMessage());
+        }
         mRequestHome = Volley.newRequestQueue(getActivity().getApplicationContext());
         mImgHome = new ImageLoader(mRequestHome, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap>

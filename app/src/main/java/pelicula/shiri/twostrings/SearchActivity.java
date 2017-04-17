@@ -41,8 +41,9 @@ import pelicula.shiri.twostrings.utilities.TMAUrl;
 
 public class SearchActivity extends AppCompatActivity {
     private static final String LOG_TAG_SEARCH = "SearchActivity";
-    RequestQueue mRequestSearch;
-    ImageLoader mImgSearch;
+
+    private RequestQueue mRequestSearch;
+    private ImageLoader mImgSearch;
 
     DiscreteScrollView mScrollSearch;
     TextView mTextTitle, mTextGenre, mTextUser, mTextOverview;
@@ -137,7 +138,11 @@ public class SearchActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            getSupportActionBar().setTitle(query);
+            try {
+                getSupportActionBar().setTitle(query);
+            } catch(NullPointerException e) {
+                Log.e(LOG_TAG_SEARCH, e.getMessage());
+            }
             resetFields();
             searchRequest(query);
         }

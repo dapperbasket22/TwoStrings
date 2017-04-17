@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:contentPadding="4dp"
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textGenreName"
+    android:background="@color/cardview_dark_background"
+    android:padding="4dp"
     android:layout_marginRight="8dp"
-    android:layout_marginEnd="8dp">
-
-    <TextView
-        android:id="@+id/textGenreName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</android.support.v7.widget.CardView>
+    android:layout_marginEnd="8dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />

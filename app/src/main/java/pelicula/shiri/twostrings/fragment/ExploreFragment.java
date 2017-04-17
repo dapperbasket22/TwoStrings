@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,11 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Explore movies by genre");
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Explore movies by genre");
+        } catch(NullPointerException e) {
+            Log.e("ExploreFragment", e.getMessage());
+        }
     }
 
     @Override

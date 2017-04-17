@@ -11,7 +11,7 @@ import pelicula.shiri.twostrings.model.RecommendedObject;
 public class RecommendedParser {
     private ArrayList<RecommendedObject> mData;
 
-    RecommendedParser(JSONObject response) {
+    public RecommendedParser(JSONObject response) {
         mData = new ArrayList<>();
         try{
             JSONArray results = response.getJSONArray("results");

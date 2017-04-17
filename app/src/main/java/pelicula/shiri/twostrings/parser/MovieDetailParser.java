@@ -13,7 +13,6 @@ import pelicula.shiri.twostrings.utilities.CommonMethods;
 public class MovieDetailParser {
     private MovieDetailObject mMovieData;
     private ArrayList<TdObject> mGenreArray;
-    private RecommendedParser mMovieRecommended;
 
     public MovieDetailParser(JSONObject response) {
         mGenreArray = new ArrayList<>();
@@ -51,8 +50,6 @@ public class MovieDetailParser {
             }
             if (videoKey.equals("")) videoKey = null;
 
-            mMovieRecommended = new RecommendedParser(response.getJSONObject("recommendations"));
-
             mMovieData = new MovieDetailObject(id, imdb_id, title, genre, rating, users, overview, release,
                     runtime, poster, videoKey);
         } catch (JSONException error){
@@ -66,9 +63,5 @@ public class MovieDetailParser {
 
     public ArrayList<TdObject> getmGenreArray() {
         return mGenreArray;
-    }
-
-    public RecommendedParser getmMovieRecommended() {
-        return mMovieRecommended;
     }
 }
