@@ -58,9 +58,14 @@ public class MovieDescriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_description);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMovieDetail);
         setSupportActionBar(toolbar);
+
+        int mMovieId = getIntent().getIntExtra("id", 0);
+        final String movieName = getIntent().getStringExtra("name");
+
         toolbar.post(new Runnable() {
             @Override
             public void run() {
+                getSupportActionBar().setTitle(movieName);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         });
@@ -80,8 +85,6 @@ public class MovieDescriptionActivity extends AppCompatActivity {
                 cache.put(url, bitmap);
             }
         });
-
-        int mMovieId = getIntent().getIntExtra("id", 0);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.containerMovieDetail);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutMovieDetail);

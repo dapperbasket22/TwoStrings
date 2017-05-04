@@ -1,5 +1,6 @@
 package pelicula.shiri.twostrings;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -32,11 +35,15 @@ import pelicula.shiri.twostrings.utilities.EndlessRecyclerViewScrollListener;
 import pelicula.shiri.twostrings.utilities.TMAUrl;
 
 public class ExploreActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE = 1;
+    private String genMovieUrl;
+
     RecyclerView mRecyclerExplore;
     LinearLayoutManager mRecyclerExploreLayout;
     ProgressBar mProgressExplore;
     RecyclerView.Adapter mExploreAdapter;
 
+    private EndlessRecyclerViewScrollListener mScrollListener;
     private ArrayList<MovieObject> mData;
     private RequestQueue mRequestExplore;
     private ImageLoader mImgExplore;
@@ -49,7 +56,7 @@ public class ExploreActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         TdObject genObject = (TdObject) getIntent().getSerializableExtra("genre");
-        final String genMovieUrl = TMAUrl.EXPLORE_MOVIE_URL + genObject.getmId();
+        genMovieUrl = TMAUrl.EXPLORE_MOVIE_URL + genObject.getmId();
 
         mRequestExplore = Volley.newRequestQueue(getApplicationContext());
         mImgExplore = new ImageLoader(mRequestExplore, new ImageLoader.ImageCache() {
@@ -73,7 +80,7 @@ public class ExploreActivity extends AppCompatActivity {
         mData = new ArrayList<>();
         mExploreAdapter = new MovieAdapter(mData, mImgExplore, this);
 
-        JsonObjectRequest upRequest = new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequest disRequest = new JsonObjectRequest(Request.Method.GET,
                 genMovieUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -88,21 +95,64 @@ public class ExploreActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
             }
         });
+        mRequestExplore.add(disRequest);
 
-        mRequestExplore.add(upRequest);
-
-        mRecyclerExplore.addOnScrollListener(
-                new EndlessRecyclerViewScrollListener(mRecyclerExploreLayout) {
-                    @Override
-                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        if (mData.get(mData.size() - 1) != null) {
-                            mData.add(null);
-                            mExploreAdapter.notifyItemInserted(mData.size() - 1);
-                        }
-                        loadNextDataFromApi(page, genMovieUrl);
-                    }
+        mScrollListener = new EndlessRecyclerViewScrollListener(mRecyclerExploreLayout) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (mData.get(mData.size() - 1) != null) {
+                    mData.add(null);
+                    mExploreAdapter.notifyItemInserted(mData.size() - 1);
                 }
-        );
+                loadNextDataFromApi(page, genMovieUrl);
+            }
+        };
+        mRecyclerExplore.addOnScrollListener(mScrollListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_explore, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_filter) {
+            startActivityForResult(new Intent(this, MovieFilterActivity.class), REQUEST_CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                genMovieUrl = data.getStringExtra("url");
+                mData.clear();
+                mScrollListener.resetState();
+                mExploreAdapter.notifyDataSetChanged();
+                mProgressExplore.setVisibility(View.VISIBLE);
+
+                JsonObjectRequest disRequest2 = new JsonObjectRequest(Request.Method.GET,
+                        genMovieUrl, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mProgressExplore.setVisibility(View.INVISIBLE);
+                        MovieParser parseResponse = new MovieParser(response);
+                        mData.addAll(parseResponse.getmData());
+                        mExploreAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+                mRequestExplore.add(disRequest2);
+            }
+        }
     }
 
     void loadNextDataFromApi(int page, String urlGen){

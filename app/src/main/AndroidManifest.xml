@@ -36,13 +36,15 @@
         <activity
             android:name=".MovieDescriptionActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_movie_description"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExploreActivity"
             android:label="@string/title_activity_explore"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MovieFilterActivity"
+            android:label="@string/filter"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

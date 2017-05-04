@@ -6,4 +6,6 @@
     <color name="drawable_fill">#88000000</color>
     <color name="drawable_fill_reverse">#FFFFFFFF</color>
     <color name="layout_ratings_background">#FF424242</color>
+    <color name="check">#4fe141</color>
+    <color name="uncheck">#e14141</color>
 </resources>

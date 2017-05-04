@@ -16,6 +16,10 @@ public class TMAUrl {
                     "&sort_by=popularity.desc" + "&with_genres=";
     public static final String MOVIE_DETAIL_URL = "https://api.themoviedb.org/3/movie";
 
+    //Discover
+    public static final String DIS_MOVIE = "https://api.themoviedb.org/3/discover/movie?api_key="
+            + BuildConfig.TMDB_API_KEY;
+
     //Image
     public static final String IMAGE_LOW_URL = "https://image.tmdb.org/t/p/w150/";
     public static final String IMAGE_MED_URL = "https://image.tmdb.org/t/p/w300/";

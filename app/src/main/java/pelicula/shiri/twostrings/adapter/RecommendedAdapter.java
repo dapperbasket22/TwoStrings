@@ -50,6 +50,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MovieDescriptionActivity.class);
                 intent.putExtra("id", object.getmId());
+                intent.putExtra("name", object.getmTitle());
                 mContext.startActivity(intent);
             }
         });

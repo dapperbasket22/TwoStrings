@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import pelicula.shiri.twostrings.R;
 import pelicula.shiri.twostrings.adapter.GenreAdapter;
 import pelicula.shiri.twostrings.model.TdObject;
+import pelicula.shiri.twostrings.utilities.CommonMethods;
 
 public class ExploreFragment extends Fragment {
     ProgressBar mProgressExplore;
@@ -26,7 +27,7 @@ public class ExploreFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Explore movies by genre");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_activity_explore);
         } catch(NullPointerException e) {
             Log.e("ExploreFragment", e.getMessage());
         }
@@ -41,33 +42,8 @@ public class ExploreFragment extends Fragment {
 
         mRecyclerGenre = (RecyclerView) viewExplore.findViewById(R.id.recyclerCommon);
         mRecyclerGenre.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        mRecyclerGenre.setAdapter(new GenreAdapter(getGenreData(), getContext(), 0));
+        mRecyclerGenre.setAdapter(new GenreAdapter(CommonMethods.getGenreData(), getContext(), 0));
 
         return viewExplore;
-    }
-
-    private ArrayList<TdObject> getGenreData() {
-        ArrayList<TdObject> data = new ArrayList<>();
-
-        data.add(new TdObject(28, "Action"));
-        data.add(new TdObject(12, "Adventure"));
-        data.add(new TdObject(16, "Animation"));
-        data.add(new TdObject(35, "Comedy"));
-        data.add(new TdObject(80, "Crime"));
-        data.add(new TdObject(99, "Documentary"));
-        data.add(new TdObject(18, "Drama"));
-        data.add(new TdObject(10751, "Family"));
-        data.add(new TdObject(14, "Fantasy"));
-        data.add(new TdObject(36, "History"));
-        data.add(new TdObject(27, "Horror"));
-        data.add(new TdObject(10402, "Music"));
-        data.add(new TdObject(9648, "Mystery"));
-        data.add(new TdObject(10749, "Romance"));
-        data.add(new TdObject(878, "Fiction"));
-        data.add(new TdObject(53, "Thriller"));
-        data.add(new TdObject(10752, "War"));
-        data.add(new TdObject(37, "Western"));
-
-        return data;
     }
 }
