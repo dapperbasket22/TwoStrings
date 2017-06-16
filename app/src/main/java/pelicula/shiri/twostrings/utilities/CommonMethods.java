@@ -91,4 +91,15 @@ public class CommonMethods {
             default: return "";
         }
     }
+
+    public static String getCountryCode(String c) {
+        switch (c) {
+            case "China": return "cn";
+            case "France": return "fr";
+            case "India": return "in";
+            case "Japan": return "jp";
+            case "United States of America": return "us";
+            default: return "";
+        }
+    }
 }

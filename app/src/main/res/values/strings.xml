@@ -15,7 +15,7 @@
 
     <string name="title_activity_explore">Explore</string>
     <string name="overlay">Overlay</string>
-    <string name="close_button">Close Button</string>
+
     <string name="summary">Summary</string>
     <string name="recommended">Recommended</string>
     <string name="imdb_icon">Imdb Icon</string>
@@ -24,6 +24,23 @@
     <string name="_10">/10</string>
     <string name="percent_sign">%</string>
     <string name="cast_profile">Cast Profile</string>
+
     <string name="filter">Filter</string>
     <string name="confirm">Confirm</string>
+
+    <string name="popularity">Popularity</string>
+    <string name="ratings">Ratings</string>
+    <string name="user_count">User Count</string>
+    <string name="sort_by">Sort By</string>
+    <string name="genre">Genre</string>
+    <string name="region">Region</string>
+
+    <string-array name="region_array">
+        <item />
+        <item>China</item>
+        <item>France</item>
+        <item>India</item>
+        <item>Japan</item>
+        <item>United States of America</item>
+    </string-array>
 </resources>

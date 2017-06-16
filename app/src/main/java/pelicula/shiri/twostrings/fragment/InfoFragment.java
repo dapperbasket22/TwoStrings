@@ -164,7 +164,6 @@ public class InfoFragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 mTextImdbRating.setText("-");
                 mTextTomatoRating.setText("-");
-                Log.e(TAG, error.getMessage());
             }
         });
         mRequestInfo.add(omdbRequest);
