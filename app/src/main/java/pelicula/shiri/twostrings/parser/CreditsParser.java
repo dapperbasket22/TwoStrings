@@ -15,8 +15,7 @@ public class CreditsParser {
         mCastData = new ArrayList<>();
         try{
             JSONArray results = response.getJSONArray("cast");
-            int length = results.length()>=10?10:results.length();
-            for (int i=0; i<length; i++) {
+            for (int i=0; i<results.length(); i++) {
                 JSONObject current = results.getJSONObject(i);
                 int id = current.getInt("id");
                 String character = current.getString("character");

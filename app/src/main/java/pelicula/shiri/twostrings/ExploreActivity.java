@@ -4,17 +4,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -93,6 +96,8 @@ public class ExploreActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mProgressExplore.setVisibility(View.INVISIBLE);
+                errorSnackbar(error);
             }
         });
         mRequestExplore.add(disRequest);
@@ -148,6 +153,7 @@ public class ExploreActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        errorSnackbar(error);
                     }
                 });
                 mRequestExplore.add(disRequest2);
@@ -168,10 +174,17 @@ public class ExploreActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                errorSnackbar(error);
             }
         });
 
         mRequestExplore.add(jsonObjectRequest);
+    }
+
+    void errorSnackbar(VolleyError error) {
+        if(error instanceof NetworkError)
+            Snackbar.make(findViewById(R.id.exploreCoordLayout),
+                    "No network connection", Snackbar.LENGTH_LONG).show();
     }
 
     void updateData(ArrayList<MovieObject> data){

@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -21,6 +23,8 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private ArrayList<MovieObject> mDataSet;
     private ImageLoader mImgLoader;
     private Context mContext;
+
+    private int mLastPosition = -1;
 
     public SearchMovieAdapter(ArrayList<MovieObject> data, ImageLoader imageLoader,
                               Context context) {
@@ -52,11 +56,23 @@ public class SearchMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 mContext.startActivity(intent);
             }
         });
+
+        setAnimation(holderSearchMovie.itemView, position);
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > mLastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
+            viewToAnimate.startAnimation(animation);
+            mLastPosition = position;
+        }
     }
 
     private class ViewHolderSearchMovie extends RecyclerView.ViewHolder {

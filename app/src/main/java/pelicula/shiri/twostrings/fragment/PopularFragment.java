@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -70,7 +72,7 @@ public class PopularFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View viewPopular = inflater.inflate(R.layout.fragment_recycler, container, false);
+        final View viewPopular = inflater.inflate(R.layout.fragment_recycler, container, false);
 
         mProgressPop = (ProgressBar) viewPopular.findViewById(R.id.pbCommon);
         mRecyclerPopular = (RecyclerView) viewPopular.findViewById(R.id.recyclerCommon);
@@ -93,6 +95,8 @@ public class PopularFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mProgressPop.setVisibility(View.INVISIBLE);
+                errorSnackbar(error, viewPopular);
             }
         });
 
@@ -106,7 +110,7 @@ public class PopularFragment extends Fragment {
                             mData.add(null);
                             mPopAdapter.notifyItemInserted(mData.size() - 1);
                         }
-                        loadNextDataFromApi(page, TMAUrl.POPULAR_MOVIE_URL);
+                        loadNextDataFromApi(page, TMAUrl.POPULAR_MOVIE_URL, viewPopular);
                     }
                 }
         );
@@ -114,7 +118,7 @@ public class PopularFragment extends Fragment {
         return viewPopular;
     }
 
-    void loadNextDataFromApi(int page, String urlGen){
+    void loadNextDataFromApi(int page, String urlGen, final View view){
         Uri.Builder url = Uri.parse(urlGen).buildUpon();
         url.appendQueryParameter("page",String.valueOf(page));
 
@@ -127,6 +131,7 @@ public class PopularFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                errorSnackbar(error, view);
             }
         });
 
@@ -141,5 +146,10 @@ public class PopularFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getContext(), "Something Went Wrong!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void errorSnackbar(VolleyError error, View view) {
+        if(error instanceof NetworkError)
+            Snackbar.make(view, "No network connection", Snackbar.LENGTH_LONG).show();
     }
 }

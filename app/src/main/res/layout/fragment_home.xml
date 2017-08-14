@@ -4,14 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:background="@color/drawable_fill"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerUpcoming"
         android:layout_width="0dp"

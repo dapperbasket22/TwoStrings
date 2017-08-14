@@ -34,6 +34,7 @@
     <string name="sort_by">Sort By</string>
     <string name="genre">Genre</string>
     <string name="region">Region</string>
+    <string name="data_zero">No Data Found</string>
 
     <string-array name="region_array">
         <item />

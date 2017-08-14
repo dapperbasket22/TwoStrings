@@ -1,11 +1,16 @@
 package pelicula.shiri.twostrings.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private ImageLoader mImgLoader;
     private Context mContext;
 
+    private int mLastPosition = -1;
     private final int VIEW_ITEM = 1;
 
     public MovieAdapter(ArrayList<MovieObject> data, ImageLoader loader, Context context) {
@@ -54,9 +60,9 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolderMovie) {
-            ViewHolderMovie holderMovie = (ViewHolderMovie) holder;
+            final ViewHolderMovie holderMovie = (ViewHolderMovie) holder;
             final MovieObject object = mDataSet.get(position);
 
             String imageUrl = TMAUrl.IMAGE_MED_URL + object.getmPoster();
@@ -68,7 +74,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holderMovie.textUser.setText(userCount);
             holderMovie.textOverview.setText(object.getmOverview());
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holderMovie.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, MovieDescriptionActivity.class);
@@ -77,6 +83,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mContext.startActivity(intent);
                 }
             });
+
+            setAnimation(holder.itemView, position);
         } else {
             ((ViewHolderProgress) holder).progressBar.setIndeterminate(true);
         }
@@ -85,6 +93,16 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > mLastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
+            viewToAnimate.startAnimation(animation);
+            mLastPosition = position;
+        }
     }
 
     private class ViewHolderMovie extends RecyclerView.ViewHolder {

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -16,10 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -45,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     private RequestQueue mRequestSearch;
     private ImageLoader mImgSearch;
 
+    LinearLayout mLayoutNoData;
     DiscreteScrollView mScrollSearch;
     TextView mTextTitle, mTextGenre, mTextUser, mTextOverview;
     RatingBar mRatingMovie;
@@ -75,6 +79,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        mLayoutNoData = (LinearLayout) findViewById(R.id.noSearchDataLayout);
         mScrollSearch = (DiscreteScrollView) findViewById(R.id.scrollViewSearchMovie);
         mTextTitle = (TextView) findViewById(R.id.textSearchMovieTitle);
         mTextGenre = (TextView) findViewById(R.id.textSearchMovieGenre);
@@ -128,7 +133,14 @@ public class SearchActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if (error instanceof NetworkError) {
+                    mProgressSearch.setVisibility(View.INVISIBLE);
+                    mLayoutNoData.setVisibility(View.INVISIBLE);
+                    mScrollSearch.setAdapter(new SearchMovieAdapter(new ArrayList<MovieObject>(),
+                            mImgSearch, SearchActivity.this));
+                    Snackbar.make(findViewById(R.id.searchCoordLayout),
+                            "No network connection", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -157,6 +169,7 @@ public class SearchActivity extends AppCompatActivity {
             mRatingMovie.setRating(0);
             mTextUser.setText("");
             mTextOverview.setText("");
+            mLayoutNoData.setVisibility(View.INVISIBLE);
             mRatingMovie.setVisibility(View.INVISIBLE);
             mProgressSearch.setVisibility(View.VISIBLE);
         } catch (Exception e) {
@@ -178,38 +191,42 @@ public class SearchActivity extends AppCompatActivity {
         mProgressSearch.setVisibility(View.INVISIBLE);
         mScrollSearch.setAdapter(new SearchMovieAdapter(data, mImgSearch, this));
 
-        try {
-            MovieObject firstItem = data.get(0);
-            mTextTitle.setText(firstItem.getmTitle());
-            String genre = firstItem.getmGenre();
-            if (TextUtils.isEmpty(genre)) genre = "\n";
-            mTextGenre.setText(genre);
-            mRatingMovie.setRating(firstItem.getmRating());
-            String userCount = "(" + firstItem.getmUserCount() + ")";
-            mTextUser.setText(userCount);
-            String overview = firstItem.getmOverview();
-            if (TextUtils.isEmpty(overview)) overview = "\n\n";
-            mTextOverview.setText(overview);
-            mRatingMovie.setVisibility(View.VISIBLE);
-        } catch (Exception e){
-            Log.e(LOG_TAG_SEARCH, e.getMessage());
-        }
-
-        mScrollSearch.setOnItemChangedListener(new DiscreteScrollView.OnItemChangedListener<RecyclerView.ViewHolder>() {
-            @Override
-            public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int adapterPosition) {
-                MovieObject movieItem = data.get(adapterPosition);
-                mTextTitle.setText(movieItem.getmTitle());
-                String genre = movieItem.getmGenre();
+        if (data.size() > 0) {
+            mLayoutNoData.setVisibility(View.INVISIBLE);
+            try {
+                MovieObject firstItem = data.get(0);
+                mTextTitle.setText(firstItem.getmTitle());
+                String genre = firstItem.getmGenre();
                 if (TextUtils.isEmpty(genre)) genre = "\n";
                 mTextGenre.setText(genre);
-                mRatingMovie.setRating(movieItem.getmRating());
-                String userCount = "(" + movieItem.getmUserCount() + ")";
+                mRatingMovie.setRating(firstItem.getmRating());
+                String userCount = "(" + firstItem.getmUserCount() + ")";
                 mTextUser.setText(userCount);
-                String overview = movieItem.getmOverview();
+                String overview = firstItem.getmOverview();
                 if (TextUtils.isEmpty(overview)) overview = "\n\n";
                 mTextOverview.setText(overview);
+                mRatingMovie.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                Log.e(LOG_TAG_SEARCH, e.getMessage());
             }
-        });
+
+            mScrollSearch.setOnItemChangedListener(new DiscreteScrollView.OnItemChangedListener<RecyclerView.ViewHolder>() {
+                @Override
+                public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int adapterPosition) {
+                    MovieObject movieItem = data.get(adapterPosition);
+                    mTextTitle.setText(movieItem.getmTitle());
+                    String genre = movieItem.getmGenre();
+                    if (TextUtils.isEmpty(genre)) genre = "\n";
+                    mTextGenre.setText(genre);
+                    mRatingMovie.setRating(movieItem.getmRating());
+                    String userCount = "(" + movieItem.getmUserCount() + ")";
+                    mTextUser.setText(userCount);
+                    String overview = movieItem.getmOverview();
+                    if (TextUtils.isEmpty(overview)) overview = "\n\n";
+                    mTextOverview.setText(overview);
+                }
+            });
+        } else
+            mLayoutNoData.setVisibility(View.VISIBLE);
     }
 }

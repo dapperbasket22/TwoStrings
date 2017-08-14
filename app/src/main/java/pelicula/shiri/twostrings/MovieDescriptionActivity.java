@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -105,7 +106,9 @@ public class MovieDescriptionActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if(error instanceof NetworkError)
+                    Snackbar.make(findViewById(R.id.descCoordLayout),
+                            "No network connection", Snackbar.LENGTH_LONG).show();
             }
         });
 

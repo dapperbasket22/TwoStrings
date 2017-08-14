@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -65,7 +67,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View homeView = inflater.inflate(R.layout.fragment_home, container, false);
+        final View homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
         mRecyclerUpcoming = (RecyclerView) homeView.findViewById(R.id.recyclerUpcoming);
         mSearchMovie = (SearchView) homeView.findViewById(R.id.searchMovie);
@@ -104,6 +106,8 @@ public class HomeFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if(error instanceof NetworkError)
+                    Snackbar.make(homeView, "No network connection", Snackbar.LENGTH_LONG).show();
             }
         });
 

@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class GenreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private ArrayList<TdObject> mDataSet;
     private Context mContext;
     private int mLayoutType;
+    private int mLastPosition = -1;
 
     public GenreAdapter(ArrayList<TdObject> data, Context context, int layoutType) {
         mDataSet = data;
@@ -52,11 +55,23 @@ public class GenreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 mContext.startActivity(intent);
             }
         });
+
+        setAnimation(holderGenre.itemView, position);
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > mLastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
+            viewToAnimate.startAnimation(animation);
+            mLastPosition = position;
+        }
     }
 
     private class ViewHolderGenre extends RecyclerView.ViewHolder{

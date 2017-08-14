@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -94,7 +96,7 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View infoView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         initViews(infoView);
-        setViewData();
+        setViewData(infoView);
         return infoView;
     }
 
@@ -113,7 +115,7 @@ public class InfoFragment extends Fragment {
         mRecyclerRecommended.addItemDecoration(new StartOffsetDecoration(32));
     }
 
-    private void setViewData() {
+    private void setViewData(View view) {
         String users = "(" + getArguments().getString(ARG_MOVIE_USERS) + " Users)";
         String release = "Released On: " + getArguments().getString(ARG_MOVIE_RELEASE);
         String runtime = "Runtime: " + getArguments().getString(ARG_MOVIE_RUNTIME);
@@ -125,7 +127,7 @@ public class InfoFragment extends Fragment {
         mOverview.setText(getArguments().getString(ARG_MOVIE_PLOT));
 
         omdbData();
-        recommendationData();
+        recommendationData(view);
     }
 
     private void omdbData() {
@@ -169,7 +171,7 @@ public class InfoFragment extends Fragment {
         mRequestInfo.add(omdbRequest);
     }
 
-    private void recommendationData() {
+    private void recommendationData(final View view) {
         JsonObjectRequest recommendationRequest = new JsonObjectRequest(Request.Method.GET,
                 getRecommendationUrl(), null, new Response.Listener<JSONObject>() {
             @Override
@@ -181,7 +183,8 @@ public class InfoFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if(error instanceof NetworkError)
+                    Snackbar.make(view, "No network connection", Snackbar.LENGTH_LONG).show();
             }
         });
         mRequestInfo.add(recommendationRequest);

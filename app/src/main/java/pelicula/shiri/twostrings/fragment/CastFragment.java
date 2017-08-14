@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -73,7 +75,7 @@ public class CastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
         mProgressCast = (ProgressBar) rootView.findViewById(R.id.pbCommon);
         mRecyclerCast = (RecyclerView) rootView.findViewById(R.id.recyclerCommon);
         mRecyclerCast.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -87,12 +89,13 @@ public class CastFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 mProgressCast.setVisibility(View.INVISIBLE);
                 CreditsParser parser = new CreditsParser(response);
-                mRecyclerCast.setAdapter(new CastAdapter(parser.getmCastData(), mImgLoaderCast));
+                mRecyclerCast.setAdapter(new CastAdapter(getContext(), parser.getmCastData(), mImgLoaderCast));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                if (error instanceof NetworkError)
+                    Snackbar.make(rootView, "No network connection", Snackbar.LENGTH_LONG).show();
             }
         });
 
